@@ -258,7 +258,7 @@
                     <b-row>
                         <b-col class="text-center">
                             <b-btn to='/adminarmies' class="optionbtn" id="cancelbtn" type="cancel">Cancel</b-btn>
-                            <b-btn class="optionbtn" id="createbtn" @click="addArmyGroup">Add Army Group</b-btn>
+                            <b-btn class="optionbtn" id="createbtn" @click="updateArmyGroup">Edit Army Group</b-btn>
                         </b-col>
                     </b-row>
                 </b-form>
@@ -279,8 +279,8 @@ export default {
             types: ['HQ', 'Infantry', 'Team', 'Artillery Gun', 'Anti-Tank', 'Anti-air', 'Armoured Cars', 'Tanks'],
             selectedcategory: 'Infantry',
             categories: ['Infantry', 'Artillery', 'Vechicles'],
-            title:'',
-            selectedexperience: "Regular",
+            title: '',
+            selectedexperience: 'Regular',
             experiences: ['Inexperienced', 'Regular', 'Veteran'],
             description: '',
             cost:0,
@@ -290,7 +290,7 @@ export default {
             damagevalue: -1,
             options: [],
             rules: [],
-            armygroupoptions: []
+            armygroupoptions: [],
         }
     },
     computed: {
@@ -307,6 +307,9 @@ export default {
         anyRule() {
             return this.rules.length > 0;
         },
+        getArmy() {
+            return this.$store.getters.army;
+        }
     },
     components: {
         AdminNavbar
@@ -316,7 +319,7 @@ export default {
         //     console.log("needsComposition: ", this.selectedcategory === 'Infantry')
         //     return this.selectedcategory === 'Infantry';
         // }
-        addOption() {
+        addOption(option = false) {
             let index = this.options.length + 1;
 
             // description
@@ -347,20 +350,20 @@ export default {
                 iddescriptionformgroup: iddescriptionformgroup,
                 iddescriptionforminput: iddescriptionforminput,
                 descriptionlabel: descriptionlabel,
-                descriptionvalue: '',
+                descriptionvalue: option ? option.description : '',
                 descriptionplaceholder: descriptionplaceholder,
                 idcostformgroup: idcostformgroup,
                 idcostforminput: idcostforminput,
                 costlabel: costlabel,
-                costvalue: 0,
+                costvalue: option ? option.cost : 0,
                 idlimitformgroup: idlimitformgroup,
                 idlimitforminput: idlimitforminput,
                 limitlabel: limitlabel,
-                limitvalue: 0,
+                limitvalue: option ? option.limit : 0,
                 idallornoneformgroup: idallornoneformgroup,
                 idallornoneforminput: idallornoneforminput,
                 allornonelabel: allornonelabel,
-                selectedallornone: true,
+                selectedallornone: option ? option.all_or_none : false,
                 allornoneoptions: [{value: true, text: 'Yes'}, {value: false, text: 'No'}]
             };
 
@@ -372,36 +375,39 @@ export default {
             // Remove last element
             this.options = this.options.slice(0, -1);
         },
-        addRule() {
+        addRule(rule = false) {
             let index = this.rules.length + 1;
             let label = "# " + index + " Special Rule";
             let idformgroup = "idspecialruleformgroup_" + index;
             let idforminput = "idspecialruleforminput_" + index;
             let value = '';
 
-            let rule = {
+            let rulevalues = {
                 index: index,
                 key: index + "rule",
                 label: label,
                 idformgroup: idformgroup,
                 idforminput: idforminput,
-                value: value,
+                value: rule ? rule.description : '',
             };
             
-            this.rules.push(rule);
+            this.rules.push(rulevalues);
 
         },
         deleteRule() {
             this.rules = this.rules.slice(0, -1);
         },
-        addArmyGroup(){
+        updateArmyGroup(){
             // Generate options and specialrules before constructing armygroup
             // HERE
             let armygroupoptions = this.getGeneratedOptions()
             let armyrules = this.getGeneratedRules()
+
+            const choosenarmy = this.$store.getters.army;
             
             
             let armygroup = {
+                _id: this.getArmy._id,
                 nationality: this.selectednationality,
                 type: this.selectedtype,
                 category: this.selectedcategory,
@@ -419,13 +425,16 @@ export default {
                 special_rules: armyrules
             };
             // console.log("armygroupoptions: ", armygroupoptions);
-            console.log("armygrouprules: ", armyrules)
+            // console.log("armygrouprules: ", armyrules)
             // console.log("Armygroup: ", armygroup);
-            this.$store.dispatch("addArmyGroup", armygroup);
+            this.$store.dispatch("updateArmyGroup", armygroup)
+                .then(() => {
+                    this.$router.push({
+                        path: "/adminarmies"
+                    });
+                });
 
-            this.$router.push({
-                path: "/adminarmies"
-            });
+            
         },
         getGeneratedOptions() {
             let armygroupoptions = []
@@ -458,6 +467,32 @@ export default {
 
             return armyrules
         }
+    },
+    mounted() {
+        // const choosenarmy = {}
+        const choosenarmy = this.getArmy;
+        // console.log("mounted > choosenarmy > ", choosenarmy);
+
+        this._id = choosenarmy._id;
+        this.selectednationality = choosenarmy.nationality;
+        this.title = choosenarmy.title;
+        this.selectedexperience = choosenarmy.experience;
+        this.selectedcategory = choosenarmy.category;
+        this.selectedtype = choosenarmy.type;
+        this.cost = choosenarmy.cost;
+        this.description = choosenarmy.description;
+        this.compositionDescription = choosenarmy.composition.description;
+        this.compositionSize = choosenarmy.composition.size;
+        this.weapons = choosenarmy.weapons;
+
+        choosenarmy.options.forEach(option => {
+            this.addOption(option);
+        });
+        choosenarmy.special_rules.forEach(rule => {
+            this.addRule(rule);
+        });
+
+        // this.$store.dispatch('cleanArmy');
     }
 }
 </script>

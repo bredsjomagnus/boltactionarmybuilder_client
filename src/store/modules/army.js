@@ -2,18 +2,17 @@ import Vue from 'vue'
 
 const state = {
   armies: [],
-  army: [],
+  army: {},
 }
 
 const getters = {
-  armies: state => state.armies
+  armies: state => state.armies,
+  army: state => state.army,
 }
 
 const actions = {
-  addArmyGroup({commit},
-    payload) {
-      // console.log("IN STORE - addArmyGroup payload: ", payload)
-      Vue.axios.post('/army', payload)
+  async addArmyGroup({commit}, payload) {
+      await Vue.axios.post('/army', payload)
         .then(() => {
           this.dispatch('updateArmy')
           
@@ -22,37 +21,53 @@ const actions = {
           console.log("Error adding armygroup: ", err)
         })
     },
-    updateArmy({commit}) {
-        Vue.axios.get('/army')
+    // From EditArmy.vue when editing armygroup
+    async updateArmyGroup({commit}, payload) {
+      console.log('store > modules > army > updateArmyGroup > payload.id > ', payload._id);
+      await Vue.axios.put('/army/'+payload._id, payload)
+        .then(() => {
+          this.dispatch('updateArmy')
+        })
+        .catch((err) => {
+          console.log('Error updating army: ', err);
+        });
+    },
+    // Internal Action to update state
+    async updateArmy({commit}) {
+        await Vue.axios.get('/army')
           .then((resp) => {
             let data = resp.data;
-              if (data && data.length > 0) {
-                commit('updateArmy', data)
-              }
+            if (data && data.length > 0) {
+              commit('updateArmy', data)
+            }
           })
           .catch((err) => {
             console.log("Error updating army state");
           })
       },
-      armyById({commit}, payload) {
-        Vue.axios.get('/army/' + payload)
-          .then((doc) => {
-            commit('army', doc);
+      async armyById({commit}, payload) {
+        await Vue.axios.get('/army/' + payload)
+          .then((resp) => {
+            let data = resp.data;
+            // console.log("armyById: data > ", data);
+            if (data) {
+              // commit('cleanArmy');
+              commit('army', data)
+            }
           })
           .catch((err) => {
             console.log("armyById error: ", err);
           })
       },
-      deleteArmyGroup({}, payload) {
-        console.log("Store module Army delete: payload > ", payload);
-        Vue.axios.delete('/army/delete/' + payload)
+      async deleteArmyGroup({}, payload) {
+        await Vue.axios.delete('/army/delete/' + payload)
           .then(() => {
             this.dispatch('updateArmy')
           })
           .catch((err) => {
             console.log('Error in store deleteing armygroup. ', err);
           })
-      }
+      },
 }
 
 const mutations = {
@@ -64,10 +79,16 @@ const mutations = {
     });
   },
   army(state, payload) {
-    state.army = []
-    payload.forEach(tx => {
-      state.army.push(mapArmy(tx));
-    });
+    state.army = {};
+    // console.log("mutations > army > payload > ", payload);
+    // state.army.push(mapArmy(payload));
+    state.army = payload;
+    // payload.forEach(tx => {
+    //   state.army.push(mapArmy(tx));
+    // });
+  },
+  cleanArmy(state) {
+    state.army = {}
   }
 }
 
@@ -76,7 +97,7 @@ function mapArmy(tx) {
   // console.log("tx composition > ", tx.composition.description);
 
   let army = {
-      id: tx._id,
+      _id: tx._id,
       nationality: tx.nationality,
       type: tx.type,
       category: tx.category,

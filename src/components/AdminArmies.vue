@@ -17,11 +17,11 @@
                         small>
                         <template slot='edit' slot-scope="data">
                             <!-- <b-btn :to="`#${data.item.id}`"><font-awesome-icon icon="trash" /></b-btn> -->
-                            <b-btn @click="editArmyGroup(data.item.id)"><font-awesome-icon icon="pencil-alt" /></b-btn>
+                            <b-btn @click="editArmyGroup(data.item._id)"><font-awesome-icon icon="pencil-alt" /></b-btn>
                         </template>
                         <template slot='delete' slot-scope="data">
                             <!-- <b-btn :to="`#${data.item.id}`"><font-awesome-icon icon="trash" /></b-btn> -->
-                            <b-btn @click="deleteArmyGroup(data.item.id, data.item.title)"><font-awesome-icon icon="trash" /></b-btn>
+                            <b-btn @click="deleteArmyGroup(data.item._id, data.item.title)"><font-awesome-icon icon="trash" /></b-btn>
                         </template>
                         
                     <template slot="table-caption">
@@ -43,7 +43,7 @@ export default {
         return {
             fields: [
         {
-          key: "id",
+          key: "_id",
           label: "ID",
           sortable: true
         },
@@ -54,7 +54,8 @@ export default {
         },
         {
             key: "title",
-            label: "Title"
+            label: "Title",
+            sortable: true
         },
         {
           key: "category",
@@ -122,10 +123,15 @@ export default {
             }
         },
         editArmyGroup(id) {
-            this.$store.dispatch('armyById', id);
-            this.$router.push({
-                path: '/editarmy'
-            })
+            console.log('AdminArmies > editArmyGroup > id > ', id);
+            this.$store.dispatch('armyById', id)
+                .then(() => {
+                    this.$router.push({
+                        path: '/editarmy'
+                    });
+                });
+            
+            
         }
     },
     mounted: async function() {
