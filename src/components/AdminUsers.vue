@@ -97,7 +97,6 @@ export default {
       return this.$store.getters.users.length;
     },
     getUsers() {
-      console.log("this.fields.length: ", this.fields.length);
       return this.$store.getters.users;
     }
   },

@@ -5,7 +5,7 @@
         <b-container>
             <b-row>
                 <b-col class="mt-4">
-                    <h2>EDIT ARMY</h2>
+                    <h2>ARMYTABLE</h2>
                 </b-col>
             </b-row>
             

@@ -46,6 +46,11 @@ export default new Router({
       component: () => import('./components/AdminArmies.vue')
     },
     {
+      path: '/addarmy',
+      name: 'AddArmy',
+      component: () => import('./components/AddArmy.vue')
+    },
+    {
       path: '/editarmy',
       name: 'EditArmy',
       component: () => import('./components/EditArmy.vue')

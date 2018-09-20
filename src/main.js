@@ -5,11 +5,11 @@ import store from './store/index'
 import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome, faTrash, faPencilAlt} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 
-library.add(faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome)
+library.add(faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome, faTrash, faPencilAlt)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
