@@ -181,7 +181,6 @@
                     <b-row class="mt-3">
                         <b-col class="text-center">
                             <h4>Options</h4>
-                            <b-btn class="optionbtn" size="sm" @click="deleteOption">- Delete Option</b-btn><b-btn class="optionbtn" size="sm" @click="addOption">+ Add Option</b-btn>
                         </b-col>
                     </b-row>
                     <b-row class="my-3 optionrow" v-if="anyOption" v-for="option in options" :key="option.key">          
@@ -233,8 +232,12 @@
                     </b-row>
                     <b-row class="mt-3">
                         <b-col class="text-center">
+                            <b-btn class="optionbtn" size="sm" @click="deleteOption">- Delete Option</b-btn><b-btn class="optionbtn" size="sm" @click="addOption">+ Add Option</b-btn>
+                        </b-col>
+                    </b-row>
+                    <b-row class="mt-3">
+                        <b-col class="text-center">
                             <h4>Special Rules</h4>
-                            <b-btn class="optionbtn" size="sm" @click="deleteRule">- Delete Special Rule</b-btn><b-btn class="optionbtn" size="sm" @click="addRule">+ Add Special Rule</b-btn>
                         </b-col>
                     </b-row>
                     <b-row class="my-3 rulerow" v-if="anyRule" v-for="rule in rules" :key="rule.key">          
@@ -249,6 +252,11 @@
                                         required>
                                 </b-form-input>
                             </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row class="mt-3">
+                        <b-col class="text-center">
+                            <b-btn class="optionbtn" size="sm" @click="deleteRule">- Delete Special Rule</b-btn><b-btn class="optionbtn" size="sm" @click="addRule">+ Add Special Rule</b-btn>
                         </b-col>
                     </b-row>
                     <b-row class="mt-5">
@@ -360,7 +368,7 @@ export default {
                 idallornoneformgroup: idallornoneformgroup,
                 idallornoneforminput: idallornoneforminput,
                 allornonelabel: allornonelabel,
-                selectedallornone: true,
+                selectedallornone: false,
                 allornoneoptions: [{value: true, text: 'Yes'}, {value: false, text: 'No'}]
             };
 

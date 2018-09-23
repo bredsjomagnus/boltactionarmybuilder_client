@@ -376,6 +376,8 @@ export default {
             this.options = this.options.slice(0, -1);
         },
         addRule(rule = false) {
+            console.log("EditArmy > methods > addRule > rule > ", rule)
+
             let index = this.rules.length + 1;
             let label = "# " + index + " Special Rule";
             let idformgroup = "idspecialruleformgroup_" + index;
@@ -388,7 +390,7 @@ export default {
                 label: label,
                 idformgroup: idformgroup,
                 idforminput: idforminput,
-                value: rule ? rule.description : '',
+                value: rule ? rule.rule : '',
             };
             
             this.rules.push(rulevalues);
@@ -471,7 +473,7 @@ export default {
     mounted() {
         // const choosenarmy = {}
         const choosenarmy = this.getArmy;
-        // console.log("mounted > choosenarmy > ", choosenarmy);
+        console.log("mounted > choosenarmy > ", choosenarmy);
 
         this._id = choosenarmy._id;
         this.selectednationality = choosenarmy.nationality;

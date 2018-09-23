@@ -38,18 +38,15 @@
                         <a id="emaillink" :to="`/edituser/${data.item.id}`">{{data.value}}</a>
                     </template>
                     <template slot="table-caption">
-                        All registered user accounts
+                        {{computedTotalRows}} registered user accounts
                     </template>
                 </b-table>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col offset="4">
-            
                     <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
-                    
                 </b-col>
-                
             </b-row>
         </b-container>
     </div>
@@ -104,10 +101,10 @@ export default {
     AdminNavbar
   },
   methods: {
-      onFiltered (filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+    onFiltered (filteredItems) {
+        // Trigger pagination to update the number of buttons/pages due to filtering
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
     }
   },
   mounted: async function() {
