@@ -56,6 +56,10 @@
                         :filter="filter" 
                         :filter-by.sync="filterBy"
                         @filtered="onFiltered">
+                         <template slot='copy' slot-scope="data">
+                            <!-- <b-btn :to="`#${data.item.id}`"><font-awesome-icon icon="trash" /></b-btn> -->
+                            <b-btn @click="copyArmyGroup(data.item._id)"><font-awesome-icon icon="copy" /></b-btn>
+                        </template>
                         <template slot='edit' slot-scope="data">
                             <!-- <b-btn :to="`#${data.item.id}`"><font-awesome-icon icon="trash" /></b-btn> -->
                             <b-btn @click="editArmyGroup(data.item._id)"><font-awesome-icon icon="pencil-alt" /></b-btn>
@@ -125,18 +129,15 @@ export default {
                 key: "options",
                 label: "# Options",
                 formatter: (value) => { return value.length }
-                // formatter: (value) => {
-                //     let txt = '';
-                //     value.forEach(opt => {
-                //         txt += opt.description + " ";
-                //     });
-                //     return txt 
-                // }
             },
             {
                 key: "special_rules",
                 label: "# Special Rules",
                 formatter: (value) => { return value.length }
+            },
+            {
+                key: "copy",
+                label: "Copy"
             },
             {
                 key: "edit",
@@ -197,8 +198,9 @@ export default {
                         path: '/editarmy'
                     });
                 });
-            
-            
+        },
+        copyArmyGroup(id) {
+            this.$store.dispatch('copyArmyGroup', id);
         }
     },
     mounted: async function() {

@@ -11,9 +11,42 @@ const getters = {
 }
 
 const actions = {
+
+  async copyArmyGroup({commit}, payload) {
+    await Vue.axios.get('/army/'+ payload)
+      .then((resp) => {
+        let data = resp.data;
+        let options = generateOptions(data.options);
+        let rules = generateRules(data.special_rules);
+        let doc = {
+          nationality: data.nationality,
+          type: data.type,
+          category: data.category,
+          title: data.title,
+          experience: data.experience,
+          description: data.description,
+          cost: data.cost,
+          weapons: data.weapons,
+          damagevalue: data.damagevalue,
+          composition: {
+              description: data.composition.description,
+              size: data.composition.size,
+          },
+          options: options,
+          special_rules: rules,
+        };
+        this.dispatch('addArmyGroup', doc);
+        // console.log("Copy of armygroup >\n", doc);
+      })
+      .catch((err) => {
+        console.log("Error copying armygroup: ", err);
+      })
+  },
+  // Used in AddArmy.vue -> Adds new army group to db
   async addArmyGroup({commit}, payload) {
       await Vue.axios.post('/army', payload)
         .then(() => {
+          // Update state
           this.dispatch('updateArmy')
           
         })
@@ -23,16 +56,17 @@ const actions = {
     },
     // From EditArmy.vue when editing armygroup
     async updateArmyGroup({commit}, payload) {
-      console.log('store > modules > army > updateArmyGroup > payload.id > ', payload._id);
+      // console.log('store > modules > army > updateArmyGroup > payload.id > ', payload._id);
       await Vue.axios.put('/army/'+payload._id, payload)
         .then(() => {
+          // Update state
           this.dispatch('updateArmy')
         })
         .catch((err) => {
           console.log('Error updating army: ', err);
         });
     },
-    // Internal Action to update state
+    // Internal Chain Action to update State
     async updateArmy({commit}) {
         await Vue.axios.get('/army')
           .then((resp) => {
@@ -45,13 +79,13 @@ const actions = {
             console.log("Error updating army state");
           })
       },
+      // Gets army via ID
       async armyById({commit}, payload) {
         await Vue.axios.get('/army/' + payload)
           .then((resp) => {
             let data = resp.data;
-            // console.log("armyById: data > ", data);
             if (data) {
-              // commit('cleanArmy');
+              // Update army group state
               commit('army', data)
             }
           })
@@ -59,9 +93,11 @@ const actions = {
             console.log("armyById error: ", err);
           })
       },
+      // Used in AdminArmies.vue -> deletes army group from db
       async deleteArmyGroup({}, payload) {
         await Vue.axios.delete('/army/delete/' + payload)
           .then(() => {
+            // Update army state
             this.dispatch('updateArmy')
           })
           .catch((err) => {
@@ -72,7 +108,6 @@ const actions = {
 
 const mutations = {
   updateArmy(state, payload) {
-    // console.log("update army -> payload > ", payload);
     state.armies = []
     payload.forEach(tx => {
       state.armies.push(mapArmy(tx));
@@ -80,22 +115,38 @@ const mutations = {
   },
   army(state, payload) {
     state.army = {};
-    // console.log("mutations > army > payload > ", payload);
-    // state.army.push(mapArmy(payload));
     state.army = payload;
-    // payload.forEach(tx => {
-    //   state.army.push(mapArmy(tx));
-    // });
-  },
-  cleanArmy(state) {
-    state.army = {}
   }
 }
 
-function mapArmy(tx) {
-  // console.log("tx options > ", tx.options[0]);
-  // console.log("tx composition > ", tx.composition.description);
+function generateOptions(orgoptions) {
+  let options = [];
+  orgoptions.forEach(opt => {
+    let option = {};
+    option = {
+      description: opt.description,
+      cost: opt.cost,
+      limit: opt.limit,
+      all_or_none: opt.all_or_none
+    };
+      options.push(option);
+    });
+    return options;
+}
 
+function generateRules(orgrules) {
+  let rules = [];
+  orgrules.forEach(rl => {
+    let rule = {};
+    rule = {
+      rule: rl.rule,
+    };
+      rules.push(rule);
+    });
+    return rules;
+}
+
+function mapArmy(tx) {
   let army = {
       _id: tx._id,
       nationality: tx.nationality,
