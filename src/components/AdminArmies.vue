@@ -192,7 +192,7 @@ export default {
         },
         editArmyGroup(id) {
             console.log('AdminArmies > editArmyGroup > id > ', id);
-            this.$store.dispatch('armyById', id)
+            this.$store.dispatch('getEditArmyGroupById', id)
                 .then(() => {
                     this.$router.push({
                         path: '/editarmy'
@@ -200,7 +200,7 @@ export default {
                 });
         },
         copyArmyGroup(id) {
-            this.$store.dispatch('copyArmyGroup', id);
+            this.$store.dispatch('copyEditArmyGroup', id);
         }
     },
     mounted: async function() {

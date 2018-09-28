@@ -148,6 +148,19 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
+                        <b-col>
+                            <b-form-group id="maxsize"
+                                            label="Max Size"
+                                            label-for="maxsizeinput"
+                                            v-if="needsComposition">
+                                <b-form-input id="maxsizeinput"
+                                        v-if="needsComposition"
+                                        v-model="maxsize"
+                                        type="number"
+                                        required>
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
                     </b-row>
                     <b-row class="mt-3">
                         <b-col class="text-center">
@@ -286,6 +299,7 @@ export default {
             cost:0,
             compositionDescription: '',
             compositionSize: 0,
+            maxsize: 0,
             weapons: '',
             damagevalue: -1,
             options: [],
@@ -308,7 +322,7 @@ export default {
             return this.rules.length > 0;
         },
         getArmy() {
-            return this.$store.getters.army;
+            return this.$store.getters.editarmygroup;
         }
     },
     components: {
@@ -423,6 +437,7 @@ export default {
                     description: this.compositionDescription,
                     size: this.compositionSize
                 },
+                maxsize: this.maxsize,
                 options: armygroupoptions,
                 special_rules: armyrules
             };
@@ -486,6 +501,7 @@ export default {
         this.compositionDescription = choosenarmy.composition.description;
         this.compositionSize = choosenarmy.composition.size;
         this.weapons = choosenarmy.weapons;
+        this.maxsize = choosenarmy.maxsize;
 
         choosenarmy.options.forEach(option => {
             this.addOption(option);
@@ -493,7 +509,6 @@ export default {
         choosenarmy.special_rules.forEach(rule => {
             this.addRule(rule);
         });
-
         // this.$store.dispatch('cleanArmy');
     }
 }

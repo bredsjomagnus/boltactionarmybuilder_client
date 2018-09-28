@@ -2,17 +2,48 @@ import Vue from 'vue'
 
 const state = {
   armies: [],
-  army: {},
+  nationarmy: [],
+  editarmygroup: {},
+  chosenarmy: []
 }
 
+
+// GETTERS
 const getters = {
   armies: state => state.armies,
-  army: state => state.army,
+  nationarmy: state => state.nationarmy,
+  editarmygroup: state => state.editarmygroup,
+  chosenarmy: state => state.chosenarmy
 }
 
+// ACTIONS
 const actions = {
 
-  async copyArmyGroup({commit}, payload) {
+  async addToChosenArmy({commit}, payload) {
+    await Vue.axios.get('/army/'+ payload)
+      .then((resp) => {
+        let data = resp.data;
+        if(data) {
+          commit('addToChosen', data);
+        }
+      });
+  },
+
+  async nationArmy({commit}, payload) {
+    let nation = capitalizeFirstLetter(payload);
+    // console.log('store > modules > army > actions > nationArmy > nation > ', nation);
+    Vue.axios.get('/army/nationality/'+nation)
+      .then((resp) => {
+        // Receiving one nations armygroups 
+        let data = resp.data;
+        commit('updateNationArmy', data)
+      })
+      .catch((err) => {
+        console.log('Error getting nation army from api; ', err)
+      });
+  },
+
+  async copyEditArmyGroup({commit}, payload) {
     await Vue.axios.get('/army/'+ payload)
       .then((resp) => {
         let data = resp.data;
@@ -32,6 +63,7 @@ const actions = {
               description: data.composition.description,
               size: data.composition.size,
           },
+          maxsize: data.maxsize,
           options: options,
           special_rules: rules,
         };
@@ -80,13 +112,13 @@ const actions = {
           })
       },
       // Gets army via ID
-      async armyById({commit}, payload) {
+      async getEditArmyGroupById({commit}, payload) {
         await Vue.axios.get('/army/' + payload)
           .then((resp) => {
             let data = resp.data;
             if (data) {
               // Update army group state
-              commit('army', data)
+              commit('updateEditArmyGroup', data)
             }
           })
           .catch((err) => {
@@ -106,19 +138,30 @@ const actions = {
       },
 }
 
+// MUTATIONS
 const mutations = {
+  addToChosen(state, payload) {
+    state.chosenarmy.push(payload);
+  },
   updateArmy(state, payload) {
     state.armies = []
     payload.forEach(tx => {
       state.armies.push(mapArmy(tx));
     });
   },
-  army(state, payload) {
-    state.army = {};
-    state.army = payload;
+  updateNationArmy(state, payload) {
+    state.nationarmy = []
+    payload.forEach(tx => {
+      state.nationarmy.push(mapArmy(tx));
+    });
+  },
+  updateEditArmyGroup(state, payload) {
+    state.editarmygroup = {};
+    state.editarmygroup = payload;
   }
 }
 
+// HELP FUNCTIONS
 function generateOptions(orgoptions) {
   let options = [];
   orgoptions.forEach(opt => {
@@ -162,10 +205,15 @@ function mapArmy(tx) {
           description: tx.composition.description,
           size: tx.composition.size
       },
+      maxsize: tx.maxsize,
       options: tx.options,
       special_rules: tx.special_rules
     }
   return army;
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export default {

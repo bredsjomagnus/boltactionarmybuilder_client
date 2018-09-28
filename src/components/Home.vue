@@ -19,7 +19,7 @@
             class="mb-2">
             <div id="startbuttonwrapper">
               <center>
-                <b-button id="startbuildningbtn" to="armybuilder" variant="default">
+                <b-button id="startbuildningbtn" :to=nation.ref variant="default">
                   <font-awesome-icon icon="file-alt" />
                     Start building
                   </b-button>
@@ -47,12 +47,14 @@ export default {
       nations: [
         {
           title: "Germany",
+          ref: "armybuilder?nation=germany",
           img: "https://www.feldgrau.com/pk-62130.jpg",
           cardtext:
             "By 1939 the Wehrmacht – the German Army (Heer), Navy (Kriegsmarine) and Air Force (Luftwaffe) – had quietly risen to become (arguably) the most powerful fighting force in Europe. So it had to be, because they would be the primary instruments in realising the Nazi Party’s dream of a greater German Reich (its third!): a new world order and German empire that would cover all of Europe and last 1,000 years."
         },
         {
           title: "USA",
+          ref: "armybuilder?nation=usa",
           img:
             "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/SC180577t.jpg/1200px-SC180577t.jpg",
           cardtext:
@@ -60,6 +62,7 @@ export default {
         },
         {
           title: "Britain",
+          ref: "armybuilder?nation=britain",
           img:
             "http://imgc.allpostersimages.com/images/P-473-488-90/65/6534/QCE4100Z/posters/anonymous-wwii-europe-france-british-troops-debark-landing.jpg",
           cardtext:
