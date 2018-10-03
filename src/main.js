@@ -5,15 +5,47 @@ import store from './store/index'
 import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome, faTrash, faPencilAlt, faCopy, faChevronDown, faChevronUp, faChevronRight} from '@fortawesome/free-solid-svg-icons'
+import { 
+  faAddressBook, 
+  faUser, 
+  faSignOutAlt, 
+  faFileAlt, 
+  faToolbox, 
+  faHome, 
+  faTrash, 
+  faPencilAlt, 
+  faCopy, 
+  faChevronDown, 
+  faChevronUp, 
+  faChevronRight,
+  faChevronLeft, 
+  faMale, 
+  faFemale
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 
-library.add(faAddressBook, faUser, faSignOutAlt, faFileAlt, faToolbox, faHome, faTrash, faPencilAlt, faCopy, faChevronDown, faChevronUp, faChevronRight)
+library.add(
+  faAddressBook, 
+  faUser, 
+  faSignOutAlt, 
+  faFileAlt, 
+  faToolbox, 
+  faHome, 
+  faTrash, 
+  faPencilAlt, 
+  faCopy, 
+  faChevronDown, 
+  faChevronUp, 
+  faChevronRight,
+  faChevronLeft, 
+  faMale, 
+  faFemale
+  )
+
+
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
 Vue.config.productionTip = false
-
 Vue.use(BootstrapVue)
 
 Vue.axios = Vue.prototype.$http = axios.create({

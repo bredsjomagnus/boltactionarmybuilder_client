@@ -4,7 +4,8 @@ const state = {
   armies: [],
   nationarmy: [],
   editarmygroup: {},
-  chosenarmy: []
+  chosenarmy: [],
+  chosenarmycost: 0
 }
 
 
@@ -13,7 +14,8 @@ const getters = {
   armies: state => state.armies,
   nationarmy: state => state.nationarmy,
   editarmygroup: state => state.editarmygroup,
-  chosenarmy: state => state.chosenarmy
+  chosenarmy: state => state.chosenarmy,
+  chosenarmycost: state => state.chosenarmycost
 }
 
 // ACTIONS
@@ -27,6 +29,11 @@ const actions = {
           commit('addToChosen', data);
         }
       });
+  },
+
+  async removeFromChosenArmy({commit}, payload) {
+    // console.log("store > modules > army > removeFromChosenArmy > payload > ", payload);
+    commit('removeFromChosen', payload);
   },
 
   async nationArmy({commit}, payload) {
@@ -141,7 +148,35 @@ const actions = {
 // MUTATIONS
 const mutations = {
   addToChosen(state, payload) {
+
+    /* 
+    Adding a new field 'key' to object. This to be able
+    to distinct between multiple of same object in armygroup list
+    Checkning via filter so that there is no dubblettes before attaching
+    key to object
+    */
+    let key = Math.floor(Math.random() * 100000000);
+    let dubblettes = state.chosenarmy.filter(function( obj ) {
+      return obj.key === key;
+    });
+    while(dubblettes.length > 0) {
+      key = Math.floor(Math.random() * 100000000);
+      dubblettes = state.chosenarmy.filter(function( obj ) {
+        return obj.key === key;
+      });
+      // console.log("Kommer hit och generar en ny key > ", key)
+    }
+
+    // Attatching key to object.
+    payload.key = key;
     state.chosenarmy.push(payload);
+    state.chosenarmycost += payload.cost;
+  },
+  removeFromChosen(state, payload) {
+    state.chosenarmy = state.chosenarmy.filter(function( obj ) {
+        return obj.key !== payload.key;
+    });
+    state.chosenarmycost -= payload.cost;
   },
   updateArmy(state, payload) {
     state.armies = []
@@ -168,6 +203,7 @@ function generateOptions(orgoptions) {
     let option = {};
     option = {
       description: opt.description,
+      optionkey: opt.optionkey,
       cost: opt.cost,
       limit: opt.limit,
       all_or_none: opt.all_or_none
@@ -183,6 +219,7 @@ function generateRules(orgrules) {
     let rule = {};
     rule = {
       rule: rl.rule,
+      rulekey: rl.rulekey
     };
       rules.push(rule);
     });

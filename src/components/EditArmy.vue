@@ -210,7 +210,7 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="4">
+                        <b-col cols="3">
                             <b-form-group :id=option.idcostformgroup
                                             :label=option.costlabel
                                             :label-for=option.idcostforminput>
@@ -221,7 +221,7 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="4">
+                        <b-col cols="3">
                             <b-form-group :id=option.idlimitformgroup
                                             :label=option.limitlabel
                                             :label-for=option.idlimitforminput>
@@ -232,13 +232,24 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="4">
+                        <b-col cols="3">
                             <b-form-group :id=option.idallornoneformgroup
                                             :label=option.allornonelabel
                                             :label-for=option.idallornoneforminput>
                                 <b-form-select :id=option.iallornoneforminput
                                         v-model="option.selectedallornone"
                                         :options="option.allornoneoptions"
+                                        required>
+                                </b-form-select>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="3">
+                            <b-form-group :id=option.idoptionkeyformgroup
+                                            :label=option.optionkeylabel
+                                            :label-for=option.idoptionkeyforminput>
+                                <b-form-select :id=option.idoptionkeyforminput
+                                        v-model="option.selectedoptionkey"
+                                        :options="option.optionkeyoptions"
                                         required>
                                 </b-form-select>
                             </b-form-group>
@@ -251,7 +262,7 @@
                         </b-col>
                     </b-row>
                     <b-row class="my-3 rulerow" v-if="anyRule" v-for="rule in rules" :key="rule.key">          
-                        <b-col cols="12">
+                        <b-col cols="9">
                             <b-form-group :id=rule.idformgroup
                                             :label=rule.label
                                             :label-for=rule.idforminput>
@@ -261,6 +272,17 @@
                                         placeholder="Add Special Rule..."
                                         required>
                                 </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="3">
+                            <b-form-group :id=rule.idrulekeyformgroup
+                                            :label=rule.rulekeylabel
+                                            :label-for=rule.idrulekeyforminput>
+                                <b-form-select :id=rule.idrulekeyforminput
+                                        v-model="rule.selectedrulekey"
+                                        :options="rule.rulekeyoptions"
+                                        required>
+                                </b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -356,6 +378,11 @@ export default {
             let idallornoneformgroup = "optionallornone_" + index;
             let idallornoneforminput = "optionallornoneinput_" + index;
             let allornonelabel = "# " + index + " Option All-Or-None";
+
+            // optionkey 
+            let idoptionkeyformgroup = "optionoptionkey_" + index;
+            let idoptionkeyforminput = "optionoptionkeyinput_" + index;
+            let optionkeylabel = "# " + index + " Option Key";
             // let allornoneoptions = [{value: true, text: 'Yes'}, {value: false, text: 'No'}]
 
             let optionvalues = {
@@ -378,7 +405,69 @@ export default {
                 idallornoneforminput: idallornoneforminput,
                 allornonelabel: allornonelabel,
                 selectedallornone: option ? option.all_or_none : false,
-                allornoneoptions: [{value: true, text: 'Yes'}, {value: false, text: 'No'}]
+                allornoneoptions: [{value: true, text: 'Yes'}, {value: false, text: 'No'}],
+                idoptionkeyformgroup: idoptionkeyformgroup,
+                idoptionkeyforminput: idoptionkeyforminput,
+                optionkeylabel: optionkeylabel,
+                selectedoptionkey: option ? option.optionkey : "extra men",
+                optionkeyoptions: [
+                    {
+                        value: "extra men", 
+                        text: 'Extra men'
+                    }, 
+                    {
+                        value: "smg", 
+                        text: 'Submachine gun'
+                    }, 
+                    {
+                        value: "ar", 
+                        text: 'Assault rifle'
+                    }, 
+                    {
+                        value: "lmg", 
+                        text: 'Light machine gun'
+                    },
+                    {
+                        value: "flamethrower", 
+                        text: 'Flamethrower'
+                    },
+                    {
+                        value: "sturmpistole", 
+                        text: 'Sturmpistole'
+                    },
+                    {
+                        value: "grb-39 grenade laucher", 
+                        text: 'GrB-39 grenade launcher'
+                    },
+                    {
+                        value: "panzerfaust", 
+                        text: 'Panzerfaust'
+                    }, 
+                    {
+                        value: "atg", 
+                        text: 'Anti-tank grenade'
+                    },
+                    {
+                        value: "bicycles", 
+                        text: 'Bicycles'
+                    }, 
+                    {
+                        value: "motorcycles", 
+                        text: 'Motorcycles'
+                    }, 
+                    {
+                        value: "skis", 
+                        text: 'Skis'
+                    },
+                    {
+                        value: "fanatics", 
+                        text: 'Fanatics'
+                    },
+                    {
+                        value: "cavalry", 
+                        text: 'Cavalry'
+                    }
+                ]
             };
 
             // console.log("option: ", option);
@@ -397,6 +486,9 @@ export default {
             let idformgroup = "idspecialruleformgroup_" + index;
             let idforminput = "idspecialruleforminput_" + index;
             let value = '';
+            let idrulekeyformgroup = "optionrulekey_" + index;
+            let idrulekeyforminput = "optionrulekeyinput_" + index;
+            let rulekeylabel = "# " + index + " Rule Key";
 
             let rulevalues = {
                 index: index,
@@ -405,6 +497,112 @@ export default {
                 idformgroup: idformgroup,
                 idforminput: idforminput,
                 value: rule ? rule.rule : '',
+                idrulekeyformgroup: idrulekeyformgroup,
+                idrulekeyforminput: idrulekeyforminput,
+                rulekeylabel: rulekeylabel,
+                selectedrulekey: rule ? rule.rulekey : null,
+                rulekeyoptions: [
+                    {
+                        value: null, 
+                        text: 'None'
+                    }, 
+                    {
+                        value: "atg", 
+                        text: 'Anti-tank grenade'
+                    }, 
+                    {
+                        value: "fanatics", 
+                        text: 'Fanatics'
+                    },
+                    {
+                        value: "sturmpistole", 
+                        text: 'Sturmpistole'
+                    },
+                    {
+                        value: "grb-39 grenade laucher", 
+                        text: 'GrB-39 grenade launcher'
+                    },
+                    {
+                        value: "bicycles", 
+                        text: 'Bicycles'
+                    }, 
+                    {
+                        value: "motorcycles", 
+                        text: 'Motorcycles'
+                    }, 
+                    {
+                        value: "skis", 
+                        text: 'Skis'
+                    }, 
+                    {
+                        value: "shirkers", 
+                        text: 'Shirkers'
+                    }, 
+                    {
+                        value: "stubborn", 
+                        text: 'Stubborn'
+                    }, 
+                    {
+                        value: "cavalry", 
+                        text: 'Cavalry'
+                    },
+                    {
+                        value: "carbines", 
+                        text: 'Carbines'
+                    },
+                    {
+                        value: "green", 
+                        text: 'Green'
+                    },
+                    {
+                        value: "team weapon", 
+                        text: 'Team Weapon'
+                    },
+                    {
+                        value: "fixed", 
+                        text: 'Fixed'
+                    },
+                    {
+                        value: "shaped charge", 
+                        text: 'Shaped charge'
+                    },
+                    {
+                        value: "goliath", 
+                        text: 'Goliath'
+                    },
+                    {
+                        value: "tank hunters", 
+                        text: 'Tank hunters'
+                    },
+                    {
+                        value: "sniper", 
+                        text: 'Sniper'
+                    },
+                    {
+                        value: "one shot weapon",
+                        text: "One Shot Weapon"
+                    },
+                    {
+                        value: "flamethrower",
+                        text: "Flamethrower"
+                    },
+                    {
+                        value: "indirect fire",
+                        text: "Indirect fire"
+                    },
+                    {
+                        value: "he d3",
+                        text: "HE (D3)"
+                    },
+                    {
+                        value: "he d4",
+                        text: "HE (D4)"
+                    },
+                    {
+                        value: "no smoke",
+                        text: "No smoke grenades"
+                    }
+                ]
             };
             
             this.rules.push(rulevalues);
@@ -460,6 +658,7 @@ export default {
 
                 armygroupoption = {
                     description: option.descriptionvalue,
+                    optionkey: option.selectedoptionkey,
                     cost: option.costvalue,
                     limit: option.limitvalue,
                     all_or_none: option.selectedallornone
@@ -476,7 +675,8 @@ export default {
                 let armyrule = {}
 
                 armyrule = {
-                    rule: rule.value
+                    rule: rule.value,
+                    rulekey: rule.selectedrulekey
                 }
 
                 armyrules.push(armyrule)

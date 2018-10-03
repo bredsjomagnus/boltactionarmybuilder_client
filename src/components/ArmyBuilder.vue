@@ -8,28 +8,41 @@
         
     </b-row>
         <b-row>
-            <div class="build-wrapper">
-                    <sidemenu></sidemenu>
 
-                    <div class="army-wrapper">
-                        <div class="armygroups-wrapper">
-                            <nation-army-list
-                                v-for="armygroup in nationarmy"
-                                :key=armygroup._id
-                                :armygroup=armygroup
-                                >
-                                </nation-army-list>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="choosenarmygroups-wrapper">
-                            <army-group
-                                v-for="armygroup in chosenarmy"
-                                :key=armygroup._id
-                                :armygroup=armygroup>
-                            </army-group>
-                        </div>
-                    </div>  
-            </div>
+            
+                <b-col>
+                    <div class="build-wrapper">
+                        <div class="army-wrapper">
+                            <div class="armygroups-wrapper">
+                                <nation-army-list
+                                    v-for="armygroup in nationarmy"
+                                    :key=armygroup._id
+                                    :armygroup=armygroup
+                                    >
+                                    </nation-army-list>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="choosenarmygroups-wrapper">
+                                <army-group
+                                    v-for="armygroup in chosenarmy"
+                                    :key=armygroup.key
+                                    :armygroup=armygroup
+                                    :reportBack=reportBack>
+                                </army-group>
+                            </div>
+                        </div> 
+                    </div>
+                </b-col>
+                    
+                
+            <b-col>
+                <table class="table">
+                    <tr>
+                        <td>Cost</td>
+                        <td>{{chosenarmycost}}pts</td>
+                    </tr>
+                </table>
+            </b-col>
         </b-row>
 </div>
 </template>
@@ -43,7 +56,7 @@ import NationArmyList from "./NationArmyList";
 export default {
     data() {
         return {
-            
+            armygroupkeys: []
         }
     },
     computed: {
@@ -57,12 +70,39 @@ export default {
         chosenarmy() {
             return this.$store.getters.chosenarmy;
         },
+        chosenarmycost() {
+            return this.$store.getters.chosenarmycost;
+        },
+        chosenarmylength() {
+            return this.$store.getters.chosenarmy.length;
+            
+        },
+        
      },
     components: {
                 Navbar,
                 Sidemenu,
                 ArmyGroup,
                 NationArmyList
+    },
+    methods: {
+        keyid() {
+            let key = 0;
+            key = Math.floor(Math.random() * 100000000);
+            // console.log("this.armygroupkeys.includes(key) ", this.armygroupkeys.includes(key))
+            while (this.armygroupkeys.includes(key)) {
+                key = Math.floor(Math.random() * 100000000);
+            }
+            this.armygroupkeys.push(key);
+            // console.log("armygroupkeys: ", this.armygroupkeys);
+            return key;
+        },
+        getAGKey(id) {
+            return id + this.chosenarmylength;
+        },
+        reportBack(data) {
+            console.log("parentCallback > data > ", data);
+        }
     },
     mounted() {
         this.$store.dispatch('nationArmy', this.nation);
